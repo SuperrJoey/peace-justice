@@ -24,6 +24,7 @@ const SDGPeaceAndJustice: React.FC = () => {
     { key: 'overview', label: 'Overview' },
     { key: 'targets', label: 'Targets' },
     { key: 'explore', label: 'Explore Impact' },
+    { key: 'learn', label: 'Learn' },
     { key: 'getInvolved', label: 'Get Involved' },
     { key: 'faq', label: 'FAQs' }
   ];

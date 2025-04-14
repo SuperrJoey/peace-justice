@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Scale, ChevronDown, ChevronUp, Globe, BarChart2, Share2, Link, AlertTriangle, Lock, Users, Heart } from 'lucide-react';
+import { Scale, ChevronDown, ChevronUp, Globe, BarChart2, Share2, Link, AlertTriangle, Lock, Users, Heart, BookOpen, CheckCircle, XCircle } from 'lucide-react';
 import { useState } from 'react';
 
 interface FAQ {
@@ -25,8 +25,32 @@ interface ImpactCard {
   description: string;
 }
 
+interface Article {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  readTime: string;
+  link: string;
+  mcqs: MCQ[];
+}
+
+interface MCQ {
+  question: string;
+  options: string[];
+  correctAnswer: number;
+}
+
 const ContentSection: React.FC<ContentSectionProps> = ({ activeTab, darkMode }) => {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [selectedAnswers, setSelectedAnswers] = useState<{[key: string]: {[key: number]: number | null}}>({
+    'article1': {0: null, 1: null, 2: null, 3: null},
+    'article2': {0: null, 1: null, 2: null, 3: null}
+  });
+  const [showResults, setShowResults] = useState<{[key: string]: boolean}>({
+    'article1': false,
+    'article2': false
+  });
   
   const toggleFaq = (index: number) => {
     if (expandedFaq === index) {
@@ -34,6 +58,40 @@ const ContentSection: React.FC<ContentSectionProps> = ({ activeTab, darkMode }) 
     } else {
       setExpandedFaq(index);
     }
+  };
+
+  const selectAnswer = (articleId: string, questionIndex: number, optionIndex: number) => {
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [articleId]: {
+        ...prev[articleId],
+        [questionIndex]: optionIndex
+      }
+    }));
+  };
+
+  const checkAnswers = (articleId: string) => {
+    setShowResults(prev => ({
+      ...prev,
+      [articleId]: true
+    }));
+  };
+
+  const resetQuiz = (articleId: string) => {
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [articleId]: {0: null, 1: null, 2: null, 3: null}
+    }));
+    setShowResults(prev => ({
+      ...prev,
+      [articleId]: false
+    }));
+  };
+
+  const calculateScore = (articleId: string) => {
+    return articles.find(a => a.id === articleId)?.mcqs.reduce((score, mcq, index) => {
+      return score + (selectedAnswers[articleId][index] === mcq.correctAnswer ? 1 : 0);
+    }, 0) || 0;
   };
 
   const faqs: FAQ[] = [
@@ -90,6 +148,109 @@ const ContentSection: React.FC<ContentSectionProps> = ({ activeTab, darkMode }) 
       title: "Transparency",
       icon: <Users className="w-8 h-8 text-blue-500" />,
       description: "Countries adopting transparency laws have seen corruption perception indices improve by 22% on average."
+    }
+  ];
+
+  const articles: Article[] = [
+    {
+      id: 'article1',
+      title: "The Role of Technology in Promoting Judicial Transparency",
+      description: "Explore how digital tools are transforming justice systems worldwide, making legal processes more accessible and transparent for citizens.",
+      imageUrl: "/api/placeholder/600/400",
+      readTime: "8 min read",
+      link: "https://www.un.org/sustainabledevelopment/peace-justice/",
+      mcqs: [
+        {
+          question: "Which technology has been most effective in reducing court backlogs?",
+          options: [
+            "Blockchain records",
+            "Case management systems",
+            "AI-powered legal research",
+            "Virtual reality courtrooms"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "What percentage of countries have implemented digital court systems?",
+          options: [
+            "Less than 20%",
+            "About 35%",
+            "Over 50%",
+            "Nearly 75%"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "Which challenge is most significant when implementing judicial technology in developing nations?",
+          options: [
+            "Language barriers",
+            "Infrastructure limitations",
+            "Cultural resistance",
+            "Cost of maintenance"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "According to the article, successful digital transformation of justice systems requires:",
+          options: [
+            "Complete replacement of traditional systems",
+            "Focus primarily on high-profile cases",
+            "Stakeholder engagement and training",
+            "Privatization of court services"
+          ],
+          correctAnswer: 2
+        }
+      ]
+    },
+    {
+      id: 'article2',
+      title: "Building Peaceful Communities Through Inclusive Governance",
+      description: "Learn how participatory decision-making at local levels helps reduce conflict and build social cohesion across diverse communities.",
+      imageUrl: "/api/placeholder/600/400",
+      readTime: "12 min read",
+      link: "https://sdgs.un.org/goals/goal16",
+      mcqs: [
+        {
+          question: "What is the primary benefit of inclusive governance according to the article?",
+          options: [
+            "Faster decision-making",
+            "Reduced implementation costs",
+            "Increased community ownership",
+            "Simplified administration"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "Which group is often most marginalized in local governance processes?",
+          options: [
+            "Ethnic minorities",
+            "Youth under 25",
+            "Women in rural areas",
+            "People with disabilities"
+          ],
+          correctAnswer: 3
+        },
+        {
+          question: "The article suggests which approach is most effective for conflict reduction?",
+          options: [
+            "Strong central leadership",
+            "Multi-stakeholder dialogue",
+            "Expert-driven policy solutions",
+            "International intervention"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Communities with inclusive governance models experienced what percentage reduction in violent incidents?",
+          options: [
+            "15-20%",
+            "30-35%",
+            "45-60%",
+            "70-85%"
+          ],
+          correctAnswer: 2
+        }
+      ]
     }
   ];
 
@@ -355,142 +516,98 @@ const ContentSection: React.FC<ContentSectionProps> = ({ activeTab, darkMode }) 
           </div>
         )}
 
-        {activeTab === 'getInvolved' && (
-          <div className="max-w-4xl mx-auto space-y-8">
-            <h2 className={`text-3xl font-bold text-center ${darkMode ? 'text-blue-400' : 'text-blue-800'}`}>Get Involved</h2>
-            
-            <div className={`p-6 rounded-lg shadow-lg ${darkMode ? 'bg-gray-800' : 'bg-blue-50'}`}>
-              <h3 className="text-xl font-semibold mb-4">What You Can Do</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-semibold mb-2">Individual Actions</h4>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Educate yourself and others on justice issues</li>
-                    <li>Report corruption or injustice when you see it</li>
-                    <li>Volunteer with organizations supporting peace and rights</li>
-                    <li>Participate in civic activities like voting or forums</li>
-                    <li>Advocate for transparency and fair decision-making</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-2">Community Initiatives</h4>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Start neighborhood conflict resolution programs</li>
-                    <li>Support local governance transparency projects</li>
-                    <li>Create safe spaces for marginalized community members</li>
-                    <li>Organize community dialogues on justice and peace</li>
-                    <li>Partner with legal aid organizations for community workshops</li>
-                  </ul>
-                </div>
-              </div>
+        {activeTab === 'learn' && (
+          <div className="max-w-5xl mx-auto space-y-10">
+            <div className="text-center mb-8">
+              <BookOpen className={`w-16 h-16 mx-auto ${darkMode ? 'text-blue-400' : 'text-blue-700'}`} />
+              <h2 className={`text-3xl font-bold mt-3 ${darkMode ? 'text-blue-400' : 'text-blue-800'}`}>Learn About SDG 16</h2>
+              <p className="mt-2 max-w-2xl mx-auto">Explore articles and test your knowledge on peace, justice, and strong institutions</p>
             </div>
-            
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Volunteer",
-                  icon: <Users className={`w-10 h-10 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`} />,
-                  description: "Join local and international organizations working for peace and justice"
-                },
-                {
-                  title: "Advocate",
-                  icon: <Share2 className={`w-10 h-10 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`} />,
-                  description: "Raise awareness about SDG 16 issues through social media and community outreach"
-                },
-                {
-                  title: "Donate",
-                  icon: <Heart className={`w-10 h-10 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`} />,
-                  description: "Support organizations providing legal aid and peace-building programs"
-                }
-              ].map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  custom={idx}
-                  variants={cardVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className={`p-6 rounded-lg shadow-md text-center ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
-                >
-                  <div className="flex justify-center mb-3">
-                    {item.icon}
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                  <p>{item.description}</p>
-                </motion.div>
-              ))}
-            </div>
-            
-            <form className={`p-6 rounded-lg shadow-lg space-y-4 ${darkMode ? 'bg-gray-800' : 'bg-blue-50'}`}>
-              <h3 className="text-xl font-semibold">Connect with Us</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <input 
-                  type="text" 
-                  placeholder="Your name" 
-                  className={`w-full p-3 border rounded-lg ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-blue-200'}`} 
-                />
-                <input 
-                  type="email" 
-                  placeholder="Your email" 
-                  className={`w-full p-3 border rounded-lg ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-blue-200'}`} 
-                />
-              </div>
-              <select className={`w-full p-3 border rounded-lg ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-blue-200'}`}>
-                <option value="">How would you like to help?</option>
-                <option value="volunteer">I want to volunteer</option>
-                <option value="donate">I want to donate</option>
-                <option value="advocate">I want to advocate</option>
-                <option value="other">Other</option>
-              </select>
-              <textarea 
-                placeholder="Your message..." 
-                className={`w-full p-3 border rounded-lg h-32 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-blue-200'}`}
-              ></textarea>
-              <button className={`px-6 py-3 rounded-lg font-semibold ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-700 hover:bg-blue-800'} text-white`}>
-                Submit
-              </button>
-            </form>
-          </div>
-        )}
 
-        {activeTab === 'faq' && (
-          <div className="max-w-3xl mx-auto space-y-6">
-            <h2 className={`text-3xl font-bold text-center mb-6 ${darkMode ? 'text-blue-400' : 'text-blue-800'}`}>Frequently Asked Questions</h2>
-            {faqs.map((faq, index) => (
+            {articles.map((article, idx) => (
               <div 
-                key={index} 
-                className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} pb-4`}
+                key={article.id}
+                className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg overflow-hidden`}
               >
-                <button
-                  className={`flex justify-between items-center w-full text-left font-semibold p-3 rounded-t-lg ${
-                    expandedFaq === index 
-                      ? (darkMode ? 'bg-gray-800 text-blue-400' : 'bg-blue-100 text-blue-800')
-                      : ''
-                  }`}
-                  onClick={() => toggleFaq(index)}
-                  aria-expanded={expandedFaq === index}
-                  aria-controls={`faq-${index}`}
-                >
-                  {faq.question}
-                  {expandedFaq === index ? <ChevronUp /> : <ChevronDown />}
-                </button>
-                {expandedFaq === index && (
-                  <motion.div
-                    id={`faq-${index}`}
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    transition={{ duration: 0.3 }}
-                    className={`p-4 ${darkMode ? 'bg-gray-800' : 'bg-blue-50'} rounded-b-lg`}
-                  >
-                    {faq.answer}
-                  </motion.div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </motion.section>
-    </main>
-  );
-};
+                <div className="md:flex">
+                  <div className="md:w-1/3">
+                    <img src={article.imageUrl} alt={article.title} className="w-full h-64 object-cover" />
+                  </div>
+                  <div className="p-6 md:w-2/3">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className={`text-2xl font-bold ${darkMode ? 'text-blue-400' : 'text-blue-800'}`}>{article.title}</h3>
+                      <span className={`px-3 py-1 rounded-full text-sm ${darkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'}`}>
+                        {article.readTime}
+                      </span>
+                    </div>
+                    <p className="mb-4">{article.description}</p>
+                    <a 
+                      href={article.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center px-4 py-2 rounded-md font-medium ${
+                        darkMode 
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                          : 'bg-blue-700 hover:bg-blue-800 text-white'
+                      }`}
+                    >
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Read Article
+                    </a>
+                  </div>
+                </div>
 
-export default ContentSection;
+                <div className={`p-6 mt-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                  <h4 className="text-xl font-semibold mb-4">Test Your Knowledge</h4>
+                  
+                  <div className="space-y-6">
+                    {article.mcqs.map((mcq, qIdx) => (
+                      <div key={qIdx} className="space-y-3">
+                        <p className="font-medium">{qIdx + 1}. {mcq.question}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {mcq.options.map((option, oIdx) => (
+                            <button
+                              key={oIdx}
+                              onClick={() => !showResults[article.id] && selectAnswer(article.id, qIdx, oIdx)}
+                              className={`p-3 rounded-md text-left transition-all ${
+                                selectedAnswers[article.id][qIdx] === oIdx
+                                  ? darkMode 
+                                    ? 'bg-blue-700 text-white' 
+                                    : 'bg-blue-600 text-white'
+                                  : darkMode
+                                    ? 'bg-gray-700 hover:bg-gray-600'
+                                    : 'bg-gray-100 hover:bg-gray-200'
+                              } ${
+                                showResults[article.id] && (
+                                  oIdx === mcq.correctAnswer
+                                    ? darkMode ? 'ring-2 ring-green-500' : 'ring-2 ring-green-500'
+                                    : selectedAnswers[article.id][qIdx] === oIdx
+                                      ? darkMode ? 'ring-2 ring-red-500' : 'ring-2 ring-red-500'
+                                      : ''
+                                )
+                              }`}
+                            >
+                              <div className="flex items-center justify-between">
+                                <span>{option}</span>
+                                {showResults[article.id] && (
+                                  oIdx === mcq.correctAnswer ? (
+                                    <CheckCircle className="w-5 h-5 text-green-500" />
+                                  ) : (
+                                    selectedAnswers[article.id][qIdx] === oIdx && (
+                                      <XCircle className="w-5 h-5 text-red-500" />
+                                    )
+                                  )
+                                )}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-8 flex flex-col md:flex-row justify-between items-center">
+                    {!showResults[article.id] ? (
+                      <button
+                        onClick={() => checkAnswers(article.id)}
+                        className={`px-6 py-3 rounded-lg font-
