@@ -610,4 +610,272 @@ const ContentSection: React.FC<ContentSectionProps> = ({ activeTab, darkMode }) 
                     {!showResults[article.id] ? (
                       <button
                         onClick={() => checkAnswers(article.id)}
-                        className={`px-6 py-3 rounded-lg font-
+                        className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                        darkMode 
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                          : 'bg-blue-700 hover:bg-blue-800 text-white'
+                      }`}
+                      disabled={!Object.values(selectedAnswers[article.id]).every(val => val !== null)}
+                    >
+                      Submit Answers
+                    </button>
+                    ) : (
+                    <div className="flex flex-col space-y-2 items-center md:items-start">
+                      <div className={`text-lg font-medium ${darkMode ? 'text-blue-400' : 'text-blue-700'}`}>
+                        Your Score: {calculateScore(article.id)}/{article.mcqs.length}
+                      </div>
+                      <button
+                        onClick={() => resetQuiz(article.id)}
+                        className={`px-4 py-2 rounded-md ${
+                          darkMode 
+                            ? 'bg-gray-700 hover:bg-gray-600 text-white' 
+                            : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+                        }`}
+                      >
+                        Try Again
+                      </button>
+                    </div>
+                  )}
+                  
+                  {showResults[article.id] && (
+                    <div className={`p-4 rounded-lg ${
+                      calculateScore(article.id) === article.mcqs.length
+                        ? darkMode ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800'
+                        : darkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'
+                    }`}>
+                      {calculateScore(article.id) === article.mcqs.length 
+                        ? 'Perfect score! You have a great understanding of this topic.'
+                        : 'Great attempt! Review the answers to learn more about this important topic.'}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'getInvolved' && (
+          <div className="max-w-4xl mx-auto space-y-8">
+            <div className="text-center mb-8">
+              <Heart className={`w-16 h-16 mx-auto ${darkMode ? 'text-red-400' : 'text-red-600'}`} />
+              <h2 className={`text-3xl font-bold mt-3 ${darkMode ? 'text-blue-400' : 'text-blue-800'}`}>Get Involved</h2>
+              <p className="mt-2 max-w-2xl mx-auto">Ways you can contribute to promoting peace, justice, and strong institutions</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className={`p-6 rounded-lg shadow-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+              >
+                <h3 className="text-xl font-bold mb-4">Individual Actions</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <CheckCircle className={`w-5 h-5 mr-2 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                    <span>Stay informed about human rights and justice issues in your community</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className={`w-5 h-5 mr-2 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                    <span>Vote in elections and participate in democratic processes</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className={`w-5 h-5 mr-2 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                    <span>Report corruption or rights violations to appropriate authorities</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className={`w-5 h-5 mr-2 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                    <span>Volunteer with legal aid organizations helping vulnerable populations</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className={`w-5 h-5 mr-2 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                    <span>Practice inclusive communication and conflict resolution</span>
+                  </li>
+                </ul>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className={`p-6 rounded-lg shadow-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+              >
+                <h3 className="text-xl font-bold mb-4">Community Initiatives</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <CheckCircle className={`w-5 h-5 mr-2 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                    <span>Organize awareness campaigns about social justice issues</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className={`w-5 h-5 mr-2 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                    <span>Support community policing and neighborhood safety programs</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className={`w-5 h-5 mr-2 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                    <span>Create platforms for youth engagement in local governance</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className={`w-5 h-5 mr-2 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                    <span>Partner with schools to educate on peace and conflict resolution</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className={`w-5 h-5 mr-2 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                    <span>Advocate for transparent local government processes</span>
+                  </li>
+                </ul>
+              </motion.div>
+            </div>
+
+            <div className={`p-6 rounded-lg shadow-lg ${darkMode ? 'bg-gray-800' : 'bg-blue-50'}`}>
+              <h3 className="text-xl font-bold mb-4">Organizations to Support</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  {
+                    name: "Transparency International",
+                    description: "Works to combat global corruption and promotes transparency",
+                    website: "https://www.transparency.org"
+                  },
+                  {
+                    name: "International Justice Mission",
+                    description: "Protects the poor from violence by rescuing victims and helping authorities",
+                    website: "https://www.ijm.org"
+                  },
+                  {
+                    name: "Peace Direct",
+                    description: "Supports local peacebuilders in conflict areas around the world",
+                    website: "https://www.peacedirect.org"
+                  },
+                  {
+                    name: "Legal Aid Society",
+                    description: "Provides free legal services to low-income individuals",
+                    website: "https://www.legal-aid.org"
+                  }
+                ].map((org, idx) => (
+                  <div 
+                    key={idx}
+                    className={`p-4 rounded-md ${darkMode ? 'bg-gray-700' : 'bg-white'}`}
+                  >
+                    <h4 className="font-semibold">{org.name}</h4>
+                    <p className="mt-1 mb-2 text-sm">{org.description}</p>
+                    <a 
+                      href={org.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`text-sm inline-flex items-center ${darkMode ? 'text-blue-400' : 'text-blue-700'} hover:underline`}
+                    >
+                      <Globe className="w-4 h-4 mr-1" />
+                      Visit Website
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className={`p-6 rounded-lg shadow-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+              <h3 className="text-xl font-bold mb-4">Join Our Network</h3>
+              <p className="mb-6">Sign up to receive updates about SDG 16 initiatives and opportunities to get involved.</p>
+              
+              <div className="max-w-md mx-auto">
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      className={`w-full p-3 rounded-md ${
+                        darkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white' 
+                          : 'bg-gray-100 border-gray-300 text-gray-900'
+                      } border focus:ring-2 focus:ring-blue-500`} 
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="interests" className="block text-sm font-medium mb-1">Areas of Interest</label>
+                    <select 
+                      id="interests" 
+                      className={`w-full p-3 rounded-md ${
+                        darkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white' 
+                          : 'bg-gray-100 border-gray-300 text-gray-900'
+                      } border focus:ring-2 focus:ring-blue-500`}
+                    >
+                      <option>Access to Justice</option>
+                      <option>Anti-corruption</option>
+                      <option>Peace Building</option>
+                      <option>Institutional Reform</option>
+                      <option>Human Rights</option>
+                    </select>
+                  </div>
+                  <button 
+                    className={`w-full py-3 rounded-md font-medium transition-colors ${
+                      darkMode 
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                        : 'bg-blue-700 hover:bg-blue-800 text-white'
+                    }`}
+                  >
+                    Subscribe
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'faq' && (
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-10">
+              <h2 className={`text-3xl font-bold ${darkMode ? 'text-blue-400' : 'text-blue-800'}`}>Frequently Asked Questions</h2>
+              <p className="mt-2">Find answers to common questions about SDG 16</p>
+            </div>
+
+            <div className="space-y-4">
+              {faqs.map((faq, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <button
+                    onClick={() => toggleFaq(idx)}
+                    className={`w-full p-4 flex justify-between items-center text-left rounded-lg transition-all ${
+                      expandedFaq === idx
+                        ? darkMode 
+                          ? 'bg-blue-900 text-white' 
+                          : 'bg-blue-100 text-blue-800'
+                        : darkMode
+                          ? 'bg-gray-800 hover:bg-gray-700' 
+                          : 'bg-gray-100 hover:bg-gray-200'
+                    }`}
+                  >
+                    <span className="font-medium">{faq.question}</span>
+                    {expandedFaq === idx ? (
+                      <ChevronUp className="w-5 h-5" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5" />
+                    )}
+                  </button>
+                  
+                  {expandedFaq === idx && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className={`p-4 rounded-b-lg mt-1 ${
+                        darkMode ? 'bg-gray-700' : 'bg-white'
+                      }`}
+                    >
+                      <p>{faq.answer}</p>
+                    </motion.div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+      </motion.section>
+    </main>
+  );
+};
+
+export default ContentSection;
