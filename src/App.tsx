@@ -23,6 +23,7 @@ const SDGPeaceAndJustice: React.FC = () => {
   const navItems = [
     { key: 'overview', label: 'Overview' },
     { key: 'targets', label: 'Targets' },
+    { key: 'explore', label: 'Explore Impact' },
     { key: 'getInvolved', label: 'Get Involved' },
     { key: 'faq', label: 'FAQs' }
   ];
@@ -30,7 +31,7 @@ const SDGPeaceAndJustice: React.FC = () => {
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} font-sans transition-all`}>
       <Header navItems={navItems} activeTab={activeTab} setActiveTab={setActiveTab} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      <ContentSection activeTab={activeTab} />
+      <ContentSection activeTab={activeTab} darkMode={darkMode} />
       <Footer />
     </div>
   );
