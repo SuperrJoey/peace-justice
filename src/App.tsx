@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Header from './components/header';
 import ContentSection from './components/contentsection';
+import AboutUs from './components/aboutus'; // Import the new AboutUs component
 import Footer from './components/footer';
 
 const SDGPeaceAndJustice: React.FC = () => {
@@ -26,13 +27,21 @@ const SDGPeaceAndJustice: React.FC = () => {
     { key: 'explore', label: 'Explore Impact' },
     { key: 'learn', label: 'Learn' },
     { key: 'getInvolved', label: 'Get Involved' },
+    { key: 'aboutUs', label: 'About Us' }, // Added new tab for About Us
     { key: 'faq', label: 'FAQs' }
   ];
 
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} font-sans transition-all`}>
       <Header navItems={navItems} activeTab={activeTab} setActiveTab={setActiveTab} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      <ContentSection activeTab={activeTab} darkMode={darkMode} />
+      
+      {/* Conditionally render either ContentSection or AboutUs based on activeTab */}
+      {activeTab === 'aboutUs' ? (
+        <AboutUs darkMode={darkMode} />
+      ) : (
+        <ContentSection activeTab={activeTab} darkMode={darkMode} />
+      )}
+      
       <Footer />
     </div>
   );

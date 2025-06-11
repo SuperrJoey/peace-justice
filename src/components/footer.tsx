@@ -40,19 +40,19 @@ const Footer: React.FC = () => {
             <h3 className="font-bold text-lg">Contact Us</h3>
             <div className="flex items-center space-x-2">
               <Mail className="w-5 h-5" />
-              <a href="mailto:info@sdg16initiative.org" className="hover:text-blue-300">eshan.mitmpl2023@learner.Manipal.edu</a>
+              <a href="mailto:contact@sdg16initiative.org" className="hover:text-blue-300">amrit.mitmpl2022@learner.manipal.edu</a>
             </div>
             <div className="flex items-center space-x-2">
               <Mail className="w-5 h-5" />
-              <a href="https://sdg16initiative.org" className="hover:text-blue-300">faraz.mitmpl2023@learner.manipal.edu</a>
+              <a href="mailto:contact@sdg16initiative.org" className="hover:text-blue-300">ishan2.mitmpl2023@learner.manipal.edu</a>
             </div>
             <div className="flex items-center space-x-2">
               <Mail className="w-5 h-5" />
-              <a href="https://sdg16initiative.org" className="hover:text-blue-300">ishan2.mitmpl2023@learner.manipal.edu</a>
+              <a href="mailto:contact@sdg16initiative.org" className="hover:text-blue-300">faraz.mitmpl2023@learner.manipal.edu</a>
             </div>
             <div className="flex items-center space-x-2">
               <Mail className="w-5 h-5" />
-              <a href="https://sdg16initiative.org" className="hover:text-blue-300">amrit.mitmpl2022@learner.manipal.edu</a>
+              <a href="mailto:contact@sdg16initiative.org" className="hover:text-blue-300">eshan.mitmpl2023@learner.Manipal.edu</a>
             </div>
           </div>
         </div>
