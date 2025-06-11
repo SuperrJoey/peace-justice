@@ -1,50 +1,81 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import Header from './components/header';
-import ContentSection from './components/contentsection';
-import AboutUs from './components/aboutus'; // Import the new AboutUs component
+import { motion, AnimatePresence } from 'framer-motion';
+import Hero from './components/Hero';
+import Navigation from './components/Navigation';
+import Features from './components/Features';
+import About from './components/About';
+import Contact from './components/Contact';
 import Footer from './components/footer';
+import LoadingScreen from './components/LoadingScreen';
+import BackgroundElements from './components/BackgroundElements';
 
-const SDGPeaceAndJustice: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('overview');
-  const [darkMode, setDarkMode] = useState<boolean>(false);
-
-  const toggleDarkMode = () => {
-    setDarkMode(prevMode => !prevMode);
-  };
+const App: React.FC = () => {
+  const [activeSection, setActiveSection] = useState<string>('home');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [scrollY, setScrollY] = useState<number>(0);
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
+    // Loading screen simulation
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2500);
 
-  const navItems = [
-    { key: 'overview', label: 'Overview' },
-    { key: 'targets', label: 'Targets' },
-    { key: 'explore', label: 'Explore Impact' },
-    { key: 'learn', label: 'Learn' },
-    { key: 'getInvolved', label: 'Get Involved' },
-    { key: 'aboutUs', label: 'About Us' }, // Added new tab for About Us
-    { key: 'faq', label: 'FAQs' }
-  ];
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Page transition variants
+  const pageVariants = {
+    initial: { opacity: 0, y: 50 },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 0, y: -50 }
+  };
+
+  const pageTransition = {
+    type: "tween",
+    ease: "anticipate",
+    duration: 0.8
+  };
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} font-sans transition-all`}>
-      <Header navItems={navItems} activeTab={activeTab} setActiveTab={setActiveTab} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+    <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden relative">
+      {/* Animated Background Elements */}
+      <BackgroundElements scrollY={scrollY} />
       
-      {/* Conditionally render either ContentSection or AboutUs based on activeTab */}
-      {activeTab === 'aboutUs' ? (
-        <AboutUs darkMode={darkMode} />
-      ) : (
-        <ContentSection activeTab={activeTab} darkMode={darkMode} />
-      )}
+      {/* Navigation */}
+      <Navigation activeSection={activeSection} setActiveSection={setActiveSection} />
       
+      {/* Main Content with Page Transitions */}
+      <AnimatePresence mode="wait">
+        <motion.main
+          key={activeSection}
+          initial="initial"
+          animate="in"
+          exit="out"
+          variants={pageVariants}
+          transition={pageTransition}
+          className="relative z-10"
+        >
+          {activeSection === 'home' && <Hero />}
+          {activeSection === 'features' && <Features />}
+          {activeSection === 'about' && <About />}
+          {activeSection === 'contact' && <Contact />}
+        </motion.main>
+      </AnimatePresence>
+      
+      {/* Footer */}
       <Footer />
     </div>
   );
-}
+};
 
-export default SDGPeaceAndJustice;
+export default App;
